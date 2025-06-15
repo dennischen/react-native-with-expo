@@ -15,7 +15,7 @@ export default function App() {
   const doClear = useCallback(() => {
     setPreviousResultText('')
     setCurrentCalculation('')
-  })
+  },[])
 
   const doBackspace = useCallback(() => {
     if (currentCalculationText.length > 0) {
@@ -23,7 +23,7 @@ export default function App() {
     }else if(previousResultText.length > 0) {
       setCurrentCalculation(previousResultText.substring(0, previousResultText.length - 1))
     }
-  })
+  },[currentCalculationText, previousResultText])
 
   const doCalculate = useCallback(() => {
     if (currentCalculationText) {
@@ -35,7 +35,7 @@ export default function App() {
         setCurrentCalculation(`${NaN}`)
       }
     }
-  })
+  },[currentCalculationText])
 
   const doInputChar = useCallback((char) => {
     if (!currentCalculationText && isNumberText(previousResultText) && ['+', '-', '*', '/'].includes(char)) {
@@ -45,7 +45,7 @@ export default function App() {
     } else {
       setCurrentCalculation(char)
     }
-  }, [currentCalculationText])
+  }, [currentCalculationText, previousResultText])
 
 
   const SafeAreaViewWraper = Platform.OS === 'web' ? View : SafeAreaView
