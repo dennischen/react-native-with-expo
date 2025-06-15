@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -29,7 +28,6 @@ export default function App() {
               <Text>Button Row</Text>
             </View>
           </View>
-          <StatusBar style="auto" />
       </View>
     </SafeAreaViewWraper>
   );

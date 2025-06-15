@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar'
 import { useCallback, useState } from 'react'
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -166,7 +165,6 @@ export default function App() {
             </View>
           </View>
         </View>
-        <StatusBar style="auto" />
       </View>
     </SafeAreaViewWraper>
   )
