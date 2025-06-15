@@ -3,14 +3,51 @@ import { useCallback, useState } from 'react'
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+function isNumberText(text) {
+  const n = parseFloat(text)
+  return isFinite(n)
+}
+
 export default function App() {
 
-  const [previousInput, setPreviousInput] = useState('')
-  const [currentInput, setCurrentInput] = useState('')
+  const [previousResultText, setPreviousResultText] = useState('')
+  const [currentCalculationText, setCurrentCalculation] = useState('')
+
+  const doClear = useCallback(() => {
+    setPreviousResultText('')
+    setCurrentCalculation('')
+  })
+
+  const doBackspace = useCallback(() => {
+    if (currentCalculationText.length > 0) {
+      setCurrentCalculation(currentCalculationText.substring(0, currentCalculationText.length - 1))
+    }else if(previousResultText.length > 0) {
+      setCurrentCalculation(previousResultText.substring(0, previousResultText.length - 1))
+    }
+  })
+
+  const doCalculate = useCallback(() => {
+    if (currentCalculationText) {
+      try {
+        const result = eval(currentCalculationText)
+        setCurrentCalculation('')
+        setPreviousResultText(`${result}`)
+      } catch (err) {
+        setCurrentCalculation(`${NaN}`)
+      }
+    }
+  })
+
   const doInputChar = useCallback((char) => {
-    setPreviousInput(currentInput)
-    setCurrentInput(char)
-  },[currentInput])
+    if (!currentCalculationText && isNumberText(previousResultText) && ['+', '-', '*', '/'].includes(char)) {
+      setCurrentCalculation(previousResultText + char)
+    } else if(isNumberText(currentCalculationText)){
+      setCurrentCalculation(currentCalculationText + char)
+    } else {
+      setCurrentCalculation(char)
+    }
+  }, [currentCalculationText])
+
 
   const SafeAreaViewWraper = Platform.OS === 'web' ? View : SafeAreaView
 
@@ -18,13 +55,13 @@ export default function App() {
     <SafeAreaViewWraper style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.displayArea}>
-          <Text style={styles.previousResultText}>{previousInput}</Text>
-          <Text style={styles.currentInputText}>{currentInput}</Text>
+          <Text style={styles.previousResultText}>{previousResultText}</Text>
+          <Text style={styles.currentInputText}>{currentCalculationText}</Text>
         </View>
         <View style={styles.buttonArea}>
           <View style={styles.buttonRow}>
             <View style={styles.buttonBlock}>
-              <TouchableOpacity style={styles.button} onPress={() => doInputChar('C')}>
+              <TouchableOpacity style={styles.button} onPress={doClear}>
                 <Text>C</Text>
               </TouchableOpacity>
             </View>
@@ -32,7 +69,7 @@ export default function App() {
               <Text></Text>
             </View>
             <View style={styles.buttonBlock}>
-              <TouchableOpacity style={styles.button} onPress={() => doInputChar('⌫')}>
+              <TouchableOpacity style={styles.button} onPress={doBackspace}>
                 <Text>⌫</Text>
               </TouchableOpacity>
             </View>
@@ -123,7 +160,7 @@ export default function App() {
               </TouchableOpacity>
             </View>
             <View style={styles.buttonBlock}>
-              <TouchableOpacity style={styles.button} onPress={() => doInputChar('=')}>
+              <TouchableOpacity style={styles.button} onPress={doCalculate}>
                 <Text>=</Text>
               </TouchableOpacity>
             </View>
